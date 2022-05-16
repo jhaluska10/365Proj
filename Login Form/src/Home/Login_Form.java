@@ -18,8 +18,9 @@ import java.util.logging.Logger;
  */
 public class Login_Form extends javax.swing.JFrame {
     
-    private static String uname = null;
-    private static String pass = null;
+    private String uname = null;
+    private String pass = null;
+    private int uid = -1;
 
     /**
      * Creates new form Login_Form
@@ -258,15 +259,16 @@ public class Login_Form extends javax.swing.JFrame {
         ResultSet rs;
         try {
             Statement statement = c.createStatement();
-            String qString = "SELECT pHash, pSalt FROM Logins WHERE uname=?;";
+            String qString = "SELECT uid, pHash, pSalt FROM Logins WHERE uname=?;";
             PreparedStatement query = c.prepareStatement(qString);
             query.setString(1, uname);
             
             System.out.println(query.toString());
             rs = query.executeQuery();
             while (rs.next()) {
-                sqlHash = rs.getBytes(1);
-                salt = rs.getString(2);
+                uid = rs.getInt(1);
+                sqlHash = rs.getBytes(2);
+                salt = rs.getString(3);
             }            
         } catch (SQLException ex) {
             Logger.getLogger(Login_Form.class.getName()).log(Level.SEVERE, null, ex);
@@ -294,7 +296,7 @@ public class Login_Form extends javax.swing.JFrame {
             return;
         }
         
-        Home  hm = new Home();
+        Home  hm = new Home(uid);
         hm.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_loginButtonActionPerformed
