@@ -4,6 +4,8 @@
  */
 package Home;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -11,7 +13,24 @@ import java.sql.*;
  * @author jhalu
  */
 public class Connector {
-    static Connection connect;
+    private static Connection connect = null;
+    
+    public static Connection getInstance() {
+        if (connect == null) {
+            try {
+                connect = genConnection();
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        assert connect != null;
+        return connect;
+    }
+    
+    private static Connection genConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        return DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306/bbjgroup?user=bbjgroup&password=123pass");
+    }
 
     /**
      *
@@ -19,7 +38,7 @@ public class Connector {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    /*public static void main(String[] args) throws ClassNotFoundException, SQLException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connect = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306/bbjgroup?user=bbjgroup&password=123pass");
@@ -33,5 +52,5 @@ public class Connector {
             
         }
         
-    }
+    }*/
 }
