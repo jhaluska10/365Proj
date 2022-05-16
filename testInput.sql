@@ -3,3 +3,5 @@ insert into Logins(uname, pHash, pSalt) values('test1',
     'salt');
     
 SELECT pHash, pSalt FROM Logins WHERE uname='test1';
+
+select * from Logins

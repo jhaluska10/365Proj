@@ -47,7 +47,7 @@ public class Login_Form extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        signupLabel = new javax.swing.JLabel();
         errorLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -129,12 +129,12 @@ public class Login_Form extends javax.swing.JFrame {
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Home/lock.png"))); // NOI18N
         jLabel3.setText(" ");
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(51, 153, 255));
-        jLabel5.setText("Sign Up Here");
-        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+        signupLabel.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        signupLabel.setForeground(new java.awt.Color(51, 153, 255));
+        signupLabel.setText("Sign Up Here");
+        signupLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel5MouseClicked(evt);
+                signupLabelMouseClicked(evt);
             }
         });
 
@@ -175,7 +175,7 @@ public class Login_Form extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(157, 157, 157)
-                                .addComponent(jLabel5))
+                                .addComponent(signupLabel))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(101, 101, 101)
                                 .addComponent(errorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -200,7 +200,7 @@ public class Login_Form extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(signupLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(43, Short.MAX_VALUE))
         );
 
@@ -305,11 +305,11 @@ public class Login_Form extends javax.swing.JFrame {
         this.setVisible(false);*/
     }//GEN-LAST:event_loginButtonMouseClicked
 
-    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
-        SignUp su = new SignUp();
+    private void signupLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signupLabelMouseClicked
+        SignUp_Form su = new SignUp_Form();
         su.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_jLabel5MouseClicked
+    }//GEN-LAST:event_signupLabelMouseClicked
 
     /**
      * @param args the command line arguments
@@ -352,11 +352,11 @@ public class Login_Form extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JButton loginButton;
     private javax.swing.JPasswordField passField;
+    private javax.swing.JLabel signupLabel;
     private javax.swing.JTextField userField;
     // End of variables declaration//GEN-END:variables
 }
