@@ -22,7 +22,7 @@ public class Connector {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            connect = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306/jhaluska?user=jhaluska&password=25590376");
+            connect = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306/bbjgroup?user=bbjgroup&password=123pass");
             Statement statement = connect.createStatement();
             ResultSet rs = statement.executeQuery("Select * from customers");
             while(rs.next()){
