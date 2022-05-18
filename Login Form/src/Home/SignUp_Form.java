@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -130,7 +131,6 @@ public class SignUp_Form extends javax.swing.JFrame {
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Home/lock.png"))); // NOI18N
         jLabel9.setText(" ");
 
-        backLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         backLabel.setForeground(new java.awt.Color(51, 153, 255));
         backLabel.setText("Back");
         backLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -161,8 +161,8 @@ public class SignUp_Form extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(71, 71, 71)
                                 .addComponent(signupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(errorLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE))
+                                .addGap(0, 73, Short.MAX_VALUE))
+                            .addComponent(errorLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(71, 71, 71))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -187,7 +187,7 @@ public class SignUp_Form extends javax.swing.JFrame {
                 .addComponent(signupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(backLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -200,9 +200,11 @@ public class SignUp_Form extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 257, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         pack();
@@ -243,8 +245,8 @@ public class SignUp_Form extends javax.swing.JFrame {
         byte[] sqlHash = null;
  
         if (uname == null || pass == null) {
-            errorLabel.setText("Invalid user/pass");
-            errorLabel.setVisible(true);
+           JOptionPane.showMessageDialog(null, "Invalid User/Pass");
+ 
             return;            
         }
         
@@ -259,8 +261,8 @@ public class SignUp_Form extends javax.swing.JFrame {
             System.out.println(query.toString());
             rs = query.executeQuery();
             while (rs.next()) {
-                errorLabel.setText("Username is already taken");
-                errorLabel.setVisible(true);
+                JOptionPane.showMessageDialog(null, "Username is already in use");
+ 
                 return;
             }            
         } catch (SQLException ex) {
@@ -286,9 +288,12 @@ public class SignUp_Form extends javax.swing.JFrame {
             insert.setString(3, salt);
             insert.executeUpdate();
             
-            errorLabel.setText("User created!");
-            errorLabel.setVisible(true);
+            JOptionPane.showMessageDialog(null, "User Created Successfully");
+
             signupButton.setEnabled(false);
+            Login_Form LF = new Login_Form();
+            LF.setVisible(true);
+            this.setVisible(false);
         } catch (SQLException ex) {
             Logger.getLogger(Login_Form.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -5,12 +5,14 @@
 package Home;
 
 import java.nio.charset.StandardCharsets;
+import javax.swing.JOptionPane;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -250,8 +252,7 @@ public class Login_Form extends javax.swing.JFrame {
         byte[] sqlHash = null;
  
         if (uname == null || pass == null) {
-            errorLabel.setText("Invalid user/pass");
-            errorLabel.setVisible(true);
+            JOptionPane.showMessageDialog(null, "Invalid Username or password");
             return;            
         }
         
@@ -275,8 +276,7 @@ public class Login_Form extends javax.swing.JFrame {
         }
         
         if (salt == null) {
-            errorLabel.setText("Invalid username");
-            errorLabel.setVisible(true);
+            JOptionPane.showMessageDialog(null, "Invalid Username");
             return;
         }
         
@@ -291,8 +291,7 @@ public class Login_Form extends javax.swing.JFrame {
         }
         
         if (hash == null || sqlHash == null || !Arrays.equals(hash, sqlHash)) {
-            errorLabel.setText("Invalid password");
-            errorLabel.setVisible(true);
+            JOptionPane.showMessageDialog(null, "Invalid Password");
             return;
         }
         
