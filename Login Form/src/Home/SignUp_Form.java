@@ -31,7 +31,6 @@ public class SignUp_Form extends javax.swing.JFrame {
      */
     public SignUp_Form() {
         initComponents();
-        errorLabel.setVisible(false);
     }
 
     /**
