@@ -111,7 +111,8 @@ public class ResultPage_Form extends javax.swing.JFrame {
             Statement statement = c.createStatement();
             String qString = "SELECT I.item, I.quantity, L2.uname, I.dateAdd "+
                              "FROM Logins as L1, Items as I, Logins as L2 "+
-                             "WHERE L1.uid=I.ownedBy and I.ownedBy=? and I.category=? and L2.uid=I.addedBy;";
+                             "WHERE L1.uid=I.ownedBy and I.ownedBy=? and I.category=? and L2.uid=I.addedBy "+
+                             "ORDER BY I.dateAdd desc;";
             PreparedStatement query = c.prepareStatement(qString);
             query.setInt(1, uid);
             query.setString(2, category);
