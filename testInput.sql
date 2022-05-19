@@ -4,4 +4,7 @@ insert into Logins(uname, pHash, pSalt) values('test1',
     
 SELECT * FROM Logins WHERE uname='test1';
 
-select * from Logins
+select * from Logins;
+
+insert into Items(ownedBy, item, quantity, addedBy, dateAdd, category)
+	values(1, 'Cheese', 5, 1, '2022-05-18', 'Food');
