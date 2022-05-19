@@ -33,6 +33,9 @@ public class ResultPage_Form extends javax.swing.JFrame {
         tableLabel.setText(category);
         tableLabel.setHorizontalAlignment(SwingConstants.CENTER);
         tableLabel.setVerticalAlignment(SwingConstants.CENTER);
+        // Hide the id column
+        viewTable.getColumnModel().getColumn(4).setMinWidth(0);
+        viewTable.getColumnModel().getColumn(4).setMaxWidth(0);
         setupTable();
     }
 
@@ -48,6 +51,11 @@ public class ResultPage_Form extends javax.swing.JFrame {
         scrollPane = new javax.swing.JScrollPane();
         viewTable = new javax.swing.JTable();
         tableLabel = new javax.swing.JLabel();
+        refreshButton = new javax.swing.JButton();
+        addButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
+        removeButton = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,25 +64,59 @@ public class ResultPage_Form extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Item", "Quantity", "Added By", "Date Modified"
+                "Item", "Quantity", "Added By", "Date Modified", "id"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, true, true, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         viewTable.getTableHeader().setReorderingAllowed(false);
         scrollPane.setViewportView(viewTable);
         if (viewTable.getColumnModel().getColumnCount() > 0) {
             viewTable.getColumnModel().getColumn(1).setPreferredWidth(1);
+            viewTable.getColumnModel().getColumn(4).setResizable(false);
+            viewTable.getColumnModel().getColumn(4).setPreferredWidth(0);
         }
 
         tableLabel.setFont(new java.awt.Font("Cantarell", 1, 20)); // NOI18N
         tableLabel.setText("Text");
+
+        refreshButton.setText("Refresh");
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
+
+        addButton.setText("Add");
+
+        updateButton.setText("Update");
+
+        removeButton.setText("Remove");
+        removeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeButtonActionPerformed(evt);
+            }
+        });
+
+        backButton.setText("Back");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -83,6 +125,16 @@ public class ResultPage_Form extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(53, 53, 53)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(refreshButton)
+                        .addGap(51, 51, 51)
+                        .addComponent(addButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(updateButton)
+                        .addGap(61, 61, 61)
+                        .addComponent(removeButton)
+                        .addGap(63, 63, 63)
+                        .addComponent(backButton))
                     .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE)
                     .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(56, Short.MAX_VALUE))
@@ -94,22 +146,43 @@ public class ResultPage_Form extends javax.swing.JFrame {
                 .addComponent(tableLabel)
                 .addGap(34, 34, 34)
                 .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(refreshButton)
+                    .addComponent(addButton)
+                    .addComponent(updateButton)
+                    .addComponent(removeButton)
+                    .addComponent(backButton))
+                .addGap(20, 20, 20))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        setupTable();
+    }//GEN-LAST:event_refreshButtonActionPerformed
+
+    private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_removeButtonActionPerformed
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        Home  hm = new Home(uid);
+        hm.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_backButtonActionPerformed
+
     private void setupTable() {
         DefaultTableModel m = (DefaultTableModel) viewTable.getModel();
         
-        String uname = null;
+        m.setRowCount(0);
         
         Connection c = Connector.getInstance();
         ResultSet rs;
         try {
             Statement statement = c.createStatement();
-            String qString = "SELECT I.item, I.quantity, L2.uname, I.dateAdd "+
+            String qString = "SELECT I.item, I.quantity, L2.uname, I.dateAdd, I.id "+
                              "FROM Logins as L1, Items as I, Logins as L2 "+
                              "WHERE L1.uid=I.ownedBy and I.ownedBy=? and I.category=? and L2.uid=I.addedBy "+
                              "ORDER BY I.dateAdd desc;";
@@ -124,7 +197,8 @@ public class ResultPage_Form extends javax.swing.JFrame {
                     rs.getString(1),
                     rs.getInt(2),
                     rs.getString(3),
-                    rs.getDate(4)
+                    rs.getDate(4),
+                    rs.getInt(5)
                 });
             }            
         } catch (SQLException ex) {
@@ -133,8 +207,13 @@ public class ResultPage_Form extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addButton;
+    private javax.swing.JButton backButton;
+    private javax.swing.JButton refreshButton;
+    private javax.swing.JButton removeButton;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JLabel tableLabel;
+    private javax.swing.JButton updateButton;
     private javax.swing.JTable viewTable;
     // End of variables declaration//GEN-END:variables
 }

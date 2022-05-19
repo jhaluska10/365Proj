@@ -19,8 +19,12 @@ create table Items(
     foreign key(addedBy) references Logins(uid)
 );
 
-select * from Items;
-
-SELECT I.item, I.quantity, L2.uname, I.dateAdd
-	FROM Logins as L1, Items as I, Logins as L2
-    WHERE L1.uid=I.ownedBy and I.ownedBy=1 and I.category='Food' and L2.uid=I.addedBy;
+create table Friends(
+	uid1 int not null,
+    uid2 int not null,
+    u1Accept bool default true,
+    u2Accept bool not null,
+    primary key(uid1, uid2),
+    foreign key(uid1) references Logins(uid),
+    foreign key(uid2) references Logins(uid)
+);
