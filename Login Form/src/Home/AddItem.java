@@ -56,6 +56,11 @@ public class AddItem extends javax.swing.JDialog {
         });
 
         cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         itemField.setText("Item name");
 
@@ -124,6 +129,9 @@ public class AddItem extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_submitButtonActionPerformed
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

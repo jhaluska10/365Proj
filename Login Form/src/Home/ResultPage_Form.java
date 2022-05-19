@@ -101,6 +101,11 @@ public class ResultPage_Form extends javax.swing.JFrame {
         });
 
         addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
 
         updateButton.setText("Update");
 
@@ -172,6 +177,11 @@ public class ResultPage_Form extends javax.swing.JFrame {
         hm.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_backButtonActionPerformed
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        AddItem ai = new AddItem(this, true);
+        ai.setVisible(true);
+    }//GEN-LAST:event_addButtonActionPerformed
 
     private void setupTable() {
         DefaultTableModel m = (DefaultTableModel) viewTable.getModel();

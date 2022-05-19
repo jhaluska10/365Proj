@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -77,8 +76,18 @@ public class Friends_Form extends javax.swing.JFrame {
         });
 
         rejectButton.setText("Reject");
+        rejectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rejectButtonActionPerformed(evt);
+            }
+        });
 
         newReqButton.setText("New Request");
+        newReqButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newReqButtonActionPerformed(evt);
+            }
+        });
 
         backButton.setText("Back");
         backButton.addActionListener(new java.awt.event.ActionListener() {
@@ -92,21 +101,20 @@ public class Friends_Form extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(scrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(acceptButton)
-                        .addGap(74, 74, 74)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(37, 37, 37)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(scrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
+                                .addComponent(acceptButton)
+                                .addGap(74, 74, 74)
                                 .addComponent(newReqButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(rejectButton))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(backButton)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addComponent(rejectButton))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(208, 208, 208)
+                        .addComponent(backButton)))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -119,8 +127,9 @@ public class Friends_Form extends javax.swing.JFrame {
                     .addComponent(acceptButton)
                     .addComponent(rejectButton)
                     .addComponent(newReqButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addComponent(backButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addComponent(backButton)
+                .addContainerGap())
         );
 
         pack();
@@ -133,8 +142,52 @@ public class Friends_Form extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        if (friendTable.getSelectedRowCount() != 1)
+            return;
+        
+        int uid2 = (int) friendTable.getValueAt(friendTable.getSelectedRow(), 1);
         Connection c = Connector.getInstance();
+        
+        PreparedStatement statement;
+        try {
+            statement = c.prepareStatement("UPDATE Friends "+
+                    "SET uid2Accept=true "+
+                    "WHERE uid1=? and uid2=?;");
+            statement.setInt(1, uid);
+            statement.setInt(2, uid2);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Friends_Form.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        setupTable();
     }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void rejectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectButtonActionPerformed
+        if (friendTable.getSelectedRowCount() != 1)
+            return;
+        
+        int uid2 = (int) friendTable.getValueAt(friendTable.getSelectedRow(), 1);
+        Connection c = Connector.getInstance();
+        
+        PreparedStatement statement;
+        try {
+            statement = c.prepareStatement("DELETE FROM Friends "+
+                    "WHERE uid1=? and uid2=?;");
+            statement.setInt(1, uid);
+            statement.setInt(2, uid2);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Friends_Form.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        setupTable();
+    }//GEN-LAST:event_rejectButtonActionPerformed
+
+    private void newReqButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newReqButtonActionPerformed
+        AddFriend af = new AddFriend(this, true);
+        af.setVisible(true);
+    }//GEN-LAST:event_newReqButtonActionPerformed
 
     private void setupTable() {
         DefaultTableModel m = (DefaultTableModel) friendTable.getModel();
@@ -144,7 +197,6 @@ public class Friends_Form extends javax.swing.JFrame {
         Connection c = Connector.getInstance();
         ResultSet rs;
         try {
-            Statement statement = c.createStatement();
             String qString = "SELECT L2.uname, L2.uid "+
                              "FROM  Friends as F, Logins as L1, Logins as L2 "+
                              "WHERE F.uid1=? and L1.uid=F.uid1 and L2.uid=F.uid2 and F.u2Accept=false "+
