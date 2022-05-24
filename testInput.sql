@@ -14,3 +14,8 @@ select * from Items;
 SELECT I.item, I.quantity, L2.uname, I.dateAdd
 	FROM Logins as L1, Items as I, Logins as L2
     WHERE L1.uid=I.ownedBy and I.ownedBy=1 and I.category='Food' and L2.uid=I.addedBy;
+    
+select * from Friends;
+SELECT L.uname, L.uid
+	FROM Friends as F, Logins as L
+	WHERE F.uid2=3 and L.uid=F.uid1 and F.u2Accept=false ORDER BY L.uname;

@@ -23,7 +23,7 @@ create table Friends(
 	uid1 int not null,
     uid2 int not null,
     u1Accept bool default true,
-    u2Accept bool not null,
+    u2Accept bool default false,
     primary key(uid1, uid2),
     foreign key(uid1) references Logins(uid),
     foreign key(uid2) references Logins(uid)

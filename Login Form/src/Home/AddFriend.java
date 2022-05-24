@@ -4,18 +4,32 @@
  */
 package Home;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author bryce
  */
 public class AddFriend extends javax.swing.JDialog {
+    
+    private String uname2 = null;
+    private int uid1;
+    private int uid2;
 
     /**
      * Creates new form AddFriend
      */
-    public AddFriend(java.awt.Frame parent, boolean modal) {
+    public AddFriend(java.awt.Frame parent, boolean modal, int uid) {
         super(parent, modal);
         initComponents();
+        uid1 = uid;
     }
 
     /**
@@ -36,9 +50,25 @@ public class AddFriend extends javax.swing.JDialog {
 
         userLabel.setText("Username:");
 
+        userField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                userFieldFocusLost(evt);
+            }
+        });
+
         submitButton.setText("Submit");
+        submitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitButtonActionPerformed(evt);
+            }
+        });
 
         cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -75,47 +105,52 @@ public class AddFriend extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddFriend.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddFriend.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddFriend.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddFriend.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                AddFriend dialog = new AddFriend(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+    private void userFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_userFieldFocusLost
+        uname2 = userField.getText().trim();
+    }//GEN-LAST:event_userFieldFocusLost
+
+    private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
+        Connection c = Connector.getInstance();
+        ResultSet rs;
+        boolean found = false;
+        try {
+            String qString = "SELECT uid FROM Logins WHERE uname=?;";
+            PreparedStatement query = c.prepareStatement(qString);
+            query.setString(1, uname2);
+            
+            System.out.println(query.toString());
+            rs = query.executeQuery();
+            while (rs.next()) {
+                uid2 = rs.getInt(1);
+                found = true;
             }
-        });
-    }
+        } catch (SQLException ex) {
+            Logger.getLogger(AddFriend.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        if (!found) {
+            JOptionPane.showMessageDialog(null, "Invalid Username");
+            return;
+        }
+        
+        try {
+            String iString = "INSERT INTO Friends(uid1, uid2) values(?, ?);";
+            PreparedStatement insert = c.prepareStatement(iString);
+            insert.setInt(1, uid1);
+            insert.setInt(2, uid2);
+            System.out.println(insert.toString());
+            insert.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Login_Form.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+        JOptionPane.showMessageDialog(null, "Friend request created!");
+        dispose();
+    }//GEN-LAST:event_submitButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

@@ -151,10 +151,10 @@ public class Friends_Form extends javax.swing.JFrame {
         PreparedStatement statement;
         try {
             statement = c.prepareStatement("UPDATE Friends "+
-                    "SET uid2Accept=true "+
+                    "SET u2Accept=true "+
                     "WHERE uid1=? and uid2=?;");
-            statement.setInt(1, uid);
-            statement.setInt(2, uid2);
+            statement.setInt(1, uid2);
+            statement.setInt(2, uid);
             statement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(Friends_Form.class.getName()).log(Level.SEVERE, null, ex);
@@ -174,8 +174,8 @@ public class Friends_Form extends javax.swing.JFrame {
         try {
             statement = c.prepareStatement("DELETE FROM Friends "+
                     "WHERE uid1=? and uid2=?;");
-            statement.setInt(1, uid);
-            statement.setInt(2, uid2);
+            statement.setInt(1, uid2);
+            statement.setInt(2, uid);
             statement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(Friends_Form.class.getName()).log(Level.SEVERE, null, ex);
@@ -185,7 +185,7 @@ public class Friends_Form extends javax.swing.JFrame {
     }//GEN-LAST:event_rejectButtonActionPerformed
 
     private void newReqButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newReqButtonActionPerformed
-        AddFriend af = new AddFriend(this, true);
+        AddFriend af = new AddFriend(this, true, uid);
         af.setVisible(true);
     }//GEN-LAST:event_newReqButtonActionPerformed
 
@@ -197,10 +197,10 @@ public class Friends_Form extends javax.swing.JFrame {
         Connection c = Connector.getInstance();
         ResultSet rs;
         try {
-            String qString = "SELECT L2.uname, L2.uid "+
-                             "FROM  Friends as F, Logins as L1, Logins as L2 "+
-                             "WHERE F.uid1=? and L1.uid=F.uid1 and L2.uid=F.uid2 and F.u2Accept=false "+
-                             "ORDER BY L2.uname;";
+            String qString = "SELECT L.uname, L.uid "+
+                             "FROM  Friends as F, Logins as L "+
+                             "WHERE F.uid2=? and L.uid=F.uid1 and F.u2Accept=false "+
+                             "ORDER BY L.uname;";
             PreparedStatement query = c.prepareStatement(qString);
             query.setInt(1, uid);
             
