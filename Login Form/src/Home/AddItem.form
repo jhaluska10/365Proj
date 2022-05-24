@@ -126,11 +126,19 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Item name"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="itemFieldFocusGained"/>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="itemFieldFocusLost"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="quantField">
       <Properties>
         <Property name="text" type="java.lang.String" value="Quantity"/>
       </Properties>
+      <Events>
+        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="quantFieldFocusGained"/>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="quantFieldFocusLost"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="catSelector">
       <Properties>

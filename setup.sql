@@ -7,6 +7,16 @@ create table Logins(
 
 create index uname_idx on Logins(uname);
 
+create table Categories(
+	cat varchar(16) primary key);
+    
+insert into Categories values ('Food');
+insert into Categories values ('Goods');
+insert into Categories values ('Health');
+insert into Categories values ('Leisure');
+insert into Categories values ('Electrionics');
+insert into Categories values ('Fashion');
+
 create table Items(
 	id int auto_increment primary key,
     ownedBy int not null,
@@ -14,9 +24,10 @@ create table Items(
     quantity int default 1,
     addedBy int not null,
     dateAdd date not null,
-    category enum('Food', 'Goods', 'Health', 'Leisure', 'Electronics', 'Fashion') not null,
+    category varchar(16) not null,
     foreign key(ownedBy) references Logins(uid),
-    foreign key(addedBy) references Logins(uid)
+    foreign key(addedBy) references Logins(uid),
+    foreign key(category) references Categories(cat)
 );
 
 create table Friends(

@@ -4,18 +4,35 @@
  */
 package Home;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author bryce
  */
 public class AddItem extends javax.swing.JDialog {
+    
+    private String item = null;
+    private String quant = null;
+    private String user1 = null;
+    private int uid1;
+    private int uid2;
 
     /**
      * Creates new form addItem
      */
-    public AddItem(java.awt.Frame parent, boolean modal) {
+    public AddItem(java.awt.Frame parent, boolean modal, int uid) {
         super(parent, modal);
         initComponents();
+        uid1 = uid;
+        
+        setupDropdowns();
     }
 
     /**
@@ -63,8 +80,24 @@ public class AddItem extends javax.swing.JDialog {
         });
 
         itemField.setText("Item name");
+        itemField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                itemFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                itemFieldFocusLost(evt);
+            }
+        });
 
         quantField.setText("Quantity");
+        quantField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                quantFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                quantFieldFocusLost(evt);
+            }
+        });
 
         catSelector.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -126,13 +159,131 @@ public class AddItem extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-        // TODO add your handling code here:
+        if (item == null || quant == null) {
+            JOptionPane.showMessageDialog(null, "Please fill all fields");
+            return;
+        }
+        
+        int quantity;
+        
+        try {
+            quantity = Integer.parseInt(quant);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, quant + "Is not an integer");
+            return;
+        }
+        
+        String cat = (String) catSelector.getSelectedItem();
+        String user = (String) userSelector.getSelectedItem();
+        
+        Connection c = Connector.getInstance();
+        ResultSet rs;
+        try {
+            String qString = "SELECT uid FROM Logins WHERE uname=?;";
+            PreparedStatement query = c.prepareStatement(qString);
+            query.setString(1, user);
+            
+            System.out.println(query.toString());
+            rs = query.executeQuery();
+            while (rs.next()) {
+                uid2 = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AddFriend.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      
+        try {
+            String iString = "INSERT INTO Items(ownedBy, item, quantity, addedBy, dateAdd, category) " +
+                             "values(?, ?, ?, ?, ?, ?);";
+            PreparedStatement insert = c.prepareStatement(iString);
+            insert.setInt(1, uid2);
+            insert.setString(2, item);
+            insert.setInt(3, quantity);
+            insert.setInt(4, uid1);
+            insert.setString(5, java.time.LocalDate.now().toString());
+            insert.setString(6, cat);
+            System.out.println(insert.toString());
+            insert.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Login_Form.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        JOptionPane.showMessageDialog(null, "Item added");
+        dispose();
     }//GEN-LAST:event_submitButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    private void itemFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_itemFieldFocusGained
+        if (item == null)
+            itemField.setText("");
+    }//GEN-LAST:event_itemFieldFocusGained
+
+    private void quantFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_quantFieldFocusGained
+        if (quant == null)
+            quantField.setText("");
+    }//GEN-LAST:event_quantFieldFocusGained
+
+    private void itemFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_itemFieldFocusLost
+        item = itemField.getText().trim();
+    }//GEN-LAST:event_itemFieldFocusLost
+
+    private void quantFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_quantFieldFocusLost
+        quant = quantField.getText().trim();
+    }//GEN-LAST:event_quantFieldFocusLost
+
+    private void setupDropdowns() {
+        Connection c = Connector.getInstance();
+        ResultSet rs;
+        
+        catSelector.removeAllItems();
+        
+        try {
+            String qString = "SELECT * FROM  Categories;";
+            PreparedStatement query = c.prepareStatement(qString);
+            
+            System.out.println(query.toString());
+            rs = query.executeQuery();
+            while (rs.next()) {
+                catSelector.addItem(rs.getString(1));
+            }            
+        } catch (SQLException ex) {
+            Logger.getLogger(Login_Form.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        userSelector.removeAllItems();
+        try {
+            String qString = "SELECT uname FROM Logins WHERE uid=?;";
+            PreparedStatement query = c.prepareStatement(qString);
+            query.setInt(1, uid1);
+            rs = query.executeQuery();
+            while (rs.next()) {
+                userSelector.addItem(rs.getString(1));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Login_Form.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            String qString = "SELECT L.uname, L.uid "+
+                             "FROM Friends as F, Logins as L " +
+                             "WHERE (F.uid2=? and L.uid=F.uid1) or (F.uid1=? and L.uid=F.uid2) and F.u1Accept=true and F.u2Accept=true " +
+                             "ORDER BY L.uname;";
+            PreparedStatement query = c.prepareStatement(qString);
+            query.setInt(1, uid1);
+            query.setInt(2, uid1);
+            
+            System.out.println(query.toString());
+            rs = query.executeQuery();
+            while (rs.next()) {
+                userSelector.addItem(rs.getString(1));
+            }            
+        } catch (SQLException ex) {
+            Logger.getLogger(Login_Form.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel catLabel;

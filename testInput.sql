@@ -18,4 +18,10 @@ SELECT I.item, I.quantity, L2.uname, I.dateAdd
 select * from Friends;
 SELECT L.uname, L.uid
 	FROM Friends as F, Logins as L
-	WHERE F.uid2=3 and L.uid=F.uid1 and F.u2Accept=false ORDER BY L.uname;
+	WHERE F.uid2=3 and L.uid=F.uid1 and F.u2Accept=false
+    ORDER BY L.uname;
+    
+SELECT L.uname, L.uid
+	FROM Friends as F, Logins as L
+	WHERE (F.uid2=3 and L.uid=F.uid1) or (F.uid1=3 and L.uid=F.uid2) and F.u1Accept=true and F.u2Accept=true
+    ORDER BY L.uname;
