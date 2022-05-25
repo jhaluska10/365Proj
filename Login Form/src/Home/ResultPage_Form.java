@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -108,6 +109,11 @@ public class ResultPage_Form extends javax.swing.JFrame {
         });
 
         updateButton.setText("Update");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
 
         removeButton.setText("Remove");
         removeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -169,7 +175,23 @@ public class ResultPage_Form extends javax.swing.JFrame {
     }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-        // TODO add your handling code here:
+        if (viewTable.getSelectedRowCount() != 1)
+            return;
+        
+        int itemid = (int) viewTable.getValueAt(viewTable.getSelectedRow(), 4);
+        
+        Connection c = Connector.getInstance();
+        try {
+            PreparedStatement remove = c.prepareStatement("DELETE FROM Items WHERE id=?;");
+            remove.setInt(1, itemid);
+            remove.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ResultPage_Form.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        JOptionPane.showMessageDialog(null, "Item deleted");
+        
+        setupTable();
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
@@ -181,7 +203,19 @@ public class ResultPage_Form extends javax.swing.JFrame {
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         AddItem ai = new AddItem(this, true, uid, category);
         ai.setVisible(true);
+        setupTable();
     }//GEN-LAST:event_addButtonActionPerformed
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        if (viewTable.getSelectedRowCount() != 1)
+            return;
+        
+        int itemID = (int) viewTable.getValueAt(viewTable.getSelectedRow(), 4);
+        
+        UpdateItem ai = new UpdateItem(this, true, uid, category, itemID);
+        ai.setVisible(true);
+        setupTable();
+    }//GEN-LAST:event_updateButtonActionPerformed
 
     private void setupTable() {
         DefaultTableModel m = (DefaultTableModel) viewTable.getModel();
@@ -191,7 +225,6 @@ public class ResultPage_Form extends javax.swing.JFrame {
         Connection c = Connector.getInstance();
         ResultSet rs;
         try {
-            Statement statement = c.createStatement();
             String qString = "SELECT I.item, I.quantity, L2.uname, I.dateAdd, I.id "+
                              "FROM Logins as L1, Items as I, Logins as L2 "+
                              "WHERE L1.uid=I.ownedBy and I.ownedBy=? and I.category=? and L2.uid=I.addedBy "+
