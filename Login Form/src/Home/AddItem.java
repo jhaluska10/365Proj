@@ -21,17 +21,18 @@ public class AddItem extends javax.swing.JDialog {
     private String item = null;
     private String quant = null;
     private String user1 = null;
+    private String cat = null;
     private int uid1;
     private int uid2;
 
     /**
      * Creates new form addItem
      */
-    public AddItem(java.awt.Frame parent, boolean modal, int uid) {
+    public AddItem(java.awt.Frame parent, boolean modal, int uid, String cat) {
         super(parent, modal);
         initComponents();
         uid1 = uid;
-        
+        this.cat = cat;
         setupDropdowns();
     }
 
@@ -252,6 +253,7 @@ public class AddItem extends javax.swing.JDialog {
         } catch (SQLException ex) {
             Logger.getLogger(Login_Form.class.getName()).log(Level.SEVERE, null, ex);
         }
+        catSelector.setSelectedItem(cat);
         
         userSelector.removeAllItems();
         try {

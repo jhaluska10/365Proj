@@ -179,7 +179,7 @@ public class ResultPage_Form extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        AddItem ai = new AddItem(this, true, uid);
+        AddItem ai = new AddItem(this, true, uid, category);
         ai.setVisible(true);
     }//GEN-LAST:event_addButtonActionPerformed
 
