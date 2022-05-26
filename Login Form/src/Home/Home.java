@@ -250,7 +250,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_searchFieldFocusGained
 
     private void searchFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchFieldFocusLost
-        searchStr = searchField.getText();
+        searchStr = searchField.getText().trim();
     }//GEN-LAST:event_searchFieldFocusLost
 
     private void foodButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_foodButtonActionPerformed
@@ -284,7 +284,10 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_fashionButtonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        // TODO add your handling code here:
+        if (searchStr == null)   
+            return;
+        SearchResults sr = new SearchResults(this, true, uid, searchStr);
+        sr.setVisible(true);
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void friendsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_friendsButtonActionPerformed
