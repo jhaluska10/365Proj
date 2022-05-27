@@ -30,8 +30,8 @@ public class SearchResults extends javax.swing.JDialog {
         this.uid = uid;
         this.term = term;
         // Hide the id column
-        viewTable.getColumnModel().getColumn(4).setMinWidth(0);
-        viewTable.getColumnModel().getColumn(4).setMaxWidth(0);
+        viewTable.getColumnModel().getColumn(5).setMinWidth(0);
+        viewTable.getColumnModel().getColumn(5).setMaxWidth(0);
         
         setupTable();
     }
