@@ -1,0 +1,11 @@
+Joseph - Set up project and intial research to get started
+Billy - Set up basic tables for use in the project
+Bryce - Implemented login and signup
+Joseph - Created home page
+Bryce - Created items pages
+Billy - Created friends request system
+Bryce - Created modification and removal system for items
+Joseph - Created search
+Bryce - Allow for friends to add items to each others lists
+Billy - Initial work on presentation and write up
+Bryce, Joseph, Billy - Worked on presentation and write up
